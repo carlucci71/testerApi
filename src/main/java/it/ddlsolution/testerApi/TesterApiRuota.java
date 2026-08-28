@@ -76,6 +76,27 @@ public class TesterApiRuota extends BaseClass {
         if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
             testCallInfo();
         }
+        if (function.equalsIgnoreCase(enumFunction.ADD_GIOCATORE.name()) || function.equals("*")) {
+            testCallAddGiocatore();
+        }
+        if (function.equalsIgnoreCase(enumFunction.AVVIA_RANDOM.name()) || function.equals("*")) {
+            testCallAvviaRandom();
+        }
+        if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
+            testCallInfo();
+        }
+        if (function.equalsIgnoreCase(enumFunction.AVVIA.name()) || function.equals("*")) {
+            testCallAvvia();
+        }
+        if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
+            testCallInfo();
+        }
+        if (function.equalsIgnoreCase(enumFunction.INIT.name()) || function.equals("*")) {
+            testCallInit();
+        }
+        if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
+            testCallInfo();
+        }
 
         System.out.println();
         System.out.println("************** RECAP **************");
@@ -87,6 +108,26 @@ public class TesterApiRuota extends BaseClass {
         Integer statusCode = call(new HashMap<>()
                 , BASE_URL + "/game"
                 , HttpMethod.GET
+                , function);
+        esiti.put(function, statusCode);
+    }
+
+    private void testCallAvvia() {
+        String function = enumFunction.AVVIA.name();
+        Integer statusCode = call(generateBody(function
+                        , ARGS_ADD_NOME_GIOCATORE_GIMMI
+                )
+                , BASE_URL + "/game"
+                , HttpMethod.POST
+                , function);
+        esiti.put(function, statusCode);
+    }
+
+    private void testCallAvviaRandom() {
+        String function = enumFunction.AVVIA_RANDOM.name();
+        Integer statusCode = call(new HashMap<>()
+                , BASE_URL + "/game"
+                , HttpMethod.POST
                 , function);
         esiti.put(function, statusCode);
     }
@@ -146,7 +187,7 @@ public class TesterApiRuota extends BaseClass {
     private static String DEFAULT_FILECONFIGURAZIONE = "testerApiRuota.csv";
     private static String DEFAULT_FUNCTION = "*";
 
-    private enum enumFunction {INFO, ADD_GIOCATORE, ADD_GIOCATORE_GIMMI, REN_GIOCATORE, DEL_GIOCATORE, INIT}
+    private enum enumFunction {INFO, ADD_GIOCATORE, ADD_GIOCATORE_GIMMI, REN_GIOCATORE, DEL_GIOCATORE, INIT, AVVIA, AVVIA_RANDOM}
 
 
     private static final ArgBody ARGS_ADD_NOME_GIOCATORE = new ArgBody("addNomeGiocatore", "nome");
