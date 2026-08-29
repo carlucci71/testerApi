@@ -13,6 +13,7 @@ import java.util.Map;
 public class TesterApiRuota extends BaseClass {
 
     public static final String BASE_URL_LOCALE = "http://localhost:8083/api/ruota";
+    private final String SPICCHIO = "SPICCHIO";
 
     public static final String BASE_URL = BASE_URL_LOCALE;
 
@@ -51,31 +52,31 @@ public class TesterApiRuota extends BaseClass {
         restTemplate = restTemplateBuilder.build();
         leggiValDefault(fileConfigurazione);
 /*
-        testCallInfo();
+        //testCallInfo();
         testCallAddGiocatore();
-        testCallInfo();
+        //testCallInfo();
         testCallAddGiocatoreGimmi();
         testCallRenameGiocatore();
-        testCallInfo();
+        //testCallInfo();
         testCallDelGiocatore();
         testCallInit();
-        testCallInfo();
+        //testCallInfo();
         testCallAddGiocatore();
         testCallAvviaRandom();
-        testCallInfo();
+        //testCallInfo();
         testCallAvvia();
-        testCallInfo();
+        //testCallInfo();
         testCallInit();
-        testCallInfo();
+        //testCallInfo();
         testCallGira();
 //        testCallGiraLoop();
         testCallAvvia();
         testCallConsonante();
-        testCallInfo();
+        //testCallInfo();
         testCallGiraConsonante();
-        testCallInfo();
+        //testCallInfo();
         testCallGiraConsonante( 'L');
-        testCallInfo();
+        //testCallInfo();
 
  */
         testCallInit();
@@ -86,23 +87,18 @@ public class TesterApiRuota extends BaseClass {
         testCallGiraForzato("PASSA");
         testCallGiraChiamaForzato("200","T");
         testCallGiraChiamaForzato("JOLLY","M");
-        testCallInfo();
         testCallGiraForzato("BANCAROTTA");
-        testCallInfo();
         testCallGiraForzato("BANCAROTTA");
-        testCallInfo();
         testCallGiraChiamaForzato("GARAGE","N");
-        testCallInfo();
         testCallGiraChiamaForzato("TRIPLO","C");
-        testCallInfo();
-        testCallCompraForzato("A");
-        testCallInfo();
         testCallCompra();
-        testCallInfo();
+        testCallCompraForzato("O");
+        testCallCompraForzato("I");
+        testCallCompraForzato("A");
         testCallCompraForzato("U");
-        testCallInfo();
-        testCallSoluzione("Tra gennaio e marzo nel calendario di velocità e dell'amore");
-        testCallInfo();
+        testCallSoluzione("Tra gennaio e marzo nel calendario di velocita e dell'amore");
+        testCallSoluzione("Tra gennaio e marzo nel calendario di velociTà e dell'amore");
+        testCallGiraChiamaForzato("100","R");
 
 
 
@@ -134,7 +130,7 @@ public class TesterApiRuota extends BaseClass {
                         , functionCall);
                 if (mapCall.get(STATUS).equals(200)) {
                     Map content = (Map) mapCall.get(CONTENT);
-                    Object result = content.get("RESULT");
+                    Object result = content.get(SPICCHIO);
                     res.merge(result, 1, Integer::sum);
                 }
 
@@ -166,7 +162,7 @@ public class TesterApiRuota extends BaseClass {
             Integer statusCode = (Integer) call(new HashMap<>()
                     , BASE_URL + "/game/consonante"
                             + "?consonante=" + chiama
-                            + "&trovato=" + gira.get("RESULT")
+                            + "&trovato=" + gira.get(SPICCHIO)
                     , HttpMethod.GET
                     , functionCall).get(STATUS);
             esiti.put(functionCall, statusCode);
@@ -237,7 +233,7 @@ public class TesterApiRuota extends BaseClass {
             Integer statusCode = (Integer) call(new HashMap<>()
                     , BASE_URL + "/game/consonante"
                             + "?consonante=" + chiama
-                            + "&trovato=" + gira.get("RESULT")
+                            + "&trovato=" + gira.get(SPICCHIO)
                     , HttpMethod.GET
                     , functionCall).get(STATUS);
             esiti.put(functionCall, statusCode);
