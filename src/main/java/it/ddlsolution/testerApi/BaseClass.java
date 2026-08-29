@@ -84,8 +84,8 @@ public abstract class BaseClass {
             int conta = 0;
             do {
                 if (conta >= functions.size()) {
-                 //   throw new RuntimeException("Function " + function + " non configurata!");
-                    positionFunction=0;
+                    //   throw new RuntimeException("Function " + function + " non configurata!");
+                    positionFunction = 0;
                 } else {
                     if (functions.get(conta).equalsIgnoreCase(function)) {
                         positionFunction = conta;
@@ -107,7 +107,7 @@ public abstract class BaseClass {
                 if (formato.equals("base64encode")) {
                     ret = new String(Base64.getEncoder().encode(ret.toString().getBytes(StandardCharsets.UTF_8)));
                 } else if (formato.equals("json")) {
-                    try{
+                    try {
                         ret = fromJson(ret.toString(), Map.class);
                     } catch (Exception e) {
                         ret = fromJson(ret.toString(), List.class);
@@ -134,7 +134,7 @@ public abstract class BaseClass {
         }
     }
 
-    protected Map<String, Object>  call(Object body, String url, HttpMethod httpMethod, String function) {
+    protected Map<String, Object> call(Object body, String url, HttpMethod httpMethod, String function) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         return call(body, headers, url, httpMethod, function);
     }
@@ -142,16 +142,18 @@ public abstract class BaseClass {
     protected Map<String, Object> call(Object body, MultiValueMap<String, String> headers, String url, HttpMethod httpMethod, String function) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start(function);
-        System.out.println("====================================================================================================================");
+        //System.out.println("====================================================================================================================");
         String token = retrieveToken(function);
         headers.add("access_token", token);
-        System.out.println("TOKEN: " + token);
+        //System.out.println("TOKEN: " + token);
         headers.add("Content-Type", "application/json");
         HttpEntity<Object> requestEntity = new HttpEntity<>(body, headers);
         Map<String, Object> ret = new HashMap<>();
         try {
             System.out.println(function + " -> " + httpMethod + " " + url);
-            System.out.println(toJson(requestEntity.getBody()));
+            if (!httpMethod.name().equalsIgnoreCase(HttpMethod.GET.name())) {
+                System.out.println(toJson(requestEntity.getBody()));
+            }
             System.out.println("-----------------------------");
             ResponseEntity<String> response = restTemplate.exchange(url, httpMethod, requestEntity, String.class);
             System.out.println(response.getStatusCode());
@@ -185,14 +187,14 @@ public abstract class BaseClass {
             ret = null;
         }
         stopWatch.stop();
-        System.out.println("stopWatch.prettyPrint() = " + stopWatch.getTotalTimeSeconds());
+        //System.out.println("stopWatch.prettyPrint() = " + stopWatch.getTotalTimeSeconds());
         return ret;
     }
 
     private static void printHeader(HttpHeaders headers, String key) {
-        if (key.endsWith("*")){
+        if (key.endsWith("*")) {
             for (Map.Entry<String, String> entryHeader : headers.toSingleValueMap().entrySet()) {
-                if (entryHeader.getKey().startsWith(key.substring(0,key.length()-1))) {
+                if (entryHeader.getKey().startsWith(key.substring(0, key.length() - 1))) {
                     System.out.println(entryHeader.getKey() + ": " + entryHeader.getValue());
                 }
             }
@@ -205,7 +207,7 @@ public abstract class BaseClass {
 
     protected Integer callExcel(Object body, String url, HttpMethod httpMethod, String function) {
         Integer ret = null;
-        System.out.println("====================================================================================================================");
+        //System.out.println("====================================================================================================================");
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("access_token", retrieveToken(function));
         headers.add("Content-Type", "application/json");
@@ -224,7 +226,7 @@ public abstract class BaseClass {
                 System.out.println("Generato:");
                 System.out.println(fileName);
             }
-            ret=response.getStatusCode().value();
+            ret = response.getStatusCode().value();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -323,7 +325,7 @@ public abstract class BaseClass {
     protected Map<String, Object> generateBody(String function, ArgBody... keys) {
         List<Map.Entry<String, Object>> entries = new ArrayList<>();
         for (ArgBody key : keys) {
-                entries.add(getEntry(key, function));
+            entries.add(getEntry(key, function));
         }
         Map<String, Object> ret = new HashMap<>();
         for (Map.Entry<String, Object> entry : entries) {
