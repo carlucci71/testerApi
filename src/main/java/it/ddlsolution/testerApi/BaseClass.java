@@ -251,7 +251,7 @@ public abstract class BaseClass {
     protected String toJson(Object o) {
         try {
             byte[] data = mapper.writeValueAsBytes(o);
-            return new String(data, StandardCharsets.ISO_8859_1);
+            return new String(data, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
