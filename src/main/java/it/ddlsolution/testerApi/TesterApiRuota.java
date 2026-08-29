@@ -85,6 +85,10 @@ public class TesterApiRuota extends BaseClass {
         testCallGiraChiamaForzato("200","L");
         testCallGiraForzato("PASSA");
         testCallGiraChiamaForzato("200","T");
+        testCallGiraChiamaForzato("JOLLY","M");
+        testCallInfo();
+        testCallGiraForzato("BANCAROTTA");
+        testCallInfo();
         testCallGiraForzato("BANCAROTTA");
         testCallInfo();
 
