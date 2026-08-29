@@ -41,8 +41,9 @@ import java.util.stream.Collectors;
 public abstract class BaseClass {
 
 
+    protected final String STATUS = "STATUS";
+    protected final String CONTENT = "CONTENT";
     protected final String ARGS_FUNCTION = "function";
-    protected final String SECRET_JWT = "77b7342ddebffa559faddaecf9d1a62a2ac0a5731814af0d363c40930b278f80";
     protected static final String NULL = "@NULL@";
     protected final ObjectMapper mapper;
 
@@ -133,12 +134,12 @@ public abstract class BaseClass {
         }
     }
 
-    protected Integer call(Object body, String url, HttpMethod httpMethod, String function) {
+    protected Map<String, Object>  call(Object body, String url, HttpMethod httpMethod, String function) {
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         return call(body, headers, url, httpMethod, function);
     }
 
-    protected Integer call(Object body, MultiValueMap<String, String> headers, String url, HttpMethod httpMethod, String function) {
+    protected Map<String, Object> call(Object body, MultiValueMap<String, String> headers, String url, HttpMethod httpMethod, String function) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start(function);
         System.out.println("====================================================================================================================");
@@ -147,7 +148,7 @@ public abstract class BaseClass {
         System.out.println("TOKEN: " + token);
         headers.add("Content-Type", "application/json");
         HttpEntity<Object> requestEntity = new HttpEntity<>(body, headers);
-        Integer ret;
+        Map<String, Object> ret = new HashMap<>();
         try {
             System.out.println(function + " -> " + httpMethod + " " + url);
             System.out.println(toJson(requestEntity.getBody()));
@@ -168,15 +169,16 @@ public abstract class BaseClass {
                 printHeader(response.getHeaders(), "X-Total-Count");
                 printHeader(response.getHeaders(), "Link");
                 printHeader(response.getHeaders(), "X-Bps*");
+                ret.put(CONTENT, o);
             }
             System.out.println();
-            ret = response.getStatusCode().value();
+            ret.put(STATUS, response.getStatusCode().value());
         } catch (RestClientResponseException e) {
             System.out.println(e.getMessage());
             System.out.println();
             printHeader(e.getResponseHeaders(), "X-Bps*");
             System.out.println();
-            ret = e.getRawStatusCode();
+            ret.put(STATUS, e.getRawStatusCode());
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

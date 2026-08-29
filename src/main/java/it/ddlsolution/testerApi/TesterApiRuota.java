@@ -97,7 +97,33 @@ public class TesterApiRuota extends BaseClass {
         if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
             testCallInfo();
         }
-
+        if (function.equalsIgnoreCase(enumFunction.GIRA.name()) || function.equals("*")) {
+            testCallGira();
+        }
+        /*
+        if (function.equalsIgnoreCase(enumFunction.GIRA_LOOP.name()) || function.equals("*")) {
+            testCallGiraLoop();
+        }
+         */
+        if (function.equalsIgnoreCase(enumFunction.AVVIA.name()) || function.equals("*")) {
+            testCallAvvia();
+        }
+        if (function.equalsIgnoreCase(enumFunction.CONSONANTE.name()) || function.equals("*")) {
+            testCallConsonante();
+        }
+        if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
+            testCallInfo();
+        }
+        if (function.equalsIgnoreCase(enumFunction.GIRA_CONSONANTE.name()) || function.equals("*")) {
+            testCallGiraConsonante();
+        }
+        if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
+            testCallInfo();
+        }
+        testCallGiraConsonante('L');
+        if (function.equalsIgnoreCase(enumFunction.INFO.name()) || function.equals("*")) {
+            testCallInfo();
+        }
         System.out.println();
         System.out.println("************** RECAP **************");
         esiti.entrySet().forEach(System.out::println);
@@ -105,78 +131,135 @@ public class TesterApiRuota extends BaseClass {
 
     private void testCallInfo() {
         String function = enumFunction.INFO.name();
-        Integer statusCode = call(new HashMap<>()
+        Integer statusCode = (Integer) call(new HashMap<>()
                 , BASE_URL + "/game"
                 , HttpMethod.GET
-                , function);
+                , function).get(STATUS);
+        esiti.put(function, statusCode);
+    }
+    private void testCallGiraLoop() {
+        String function = enumFunction.GIRA_LOOP.name();
+        int conta=0;
+        Map<Object, Integer> res=new HashMap<>();
+        do {
+            Map mapCall = (Map) call(new HashMap<>()
+                    , BASE_URL + "/game/gira"
+                    , HttpMethod.GET
+                    , function);
+            if (mapCall.get(STATUS).equals(200)) {
+                Map content = (Map) mapCall.get(CONTENT);
+                Object result = content.get("RESULT");
+                res.merge(result, 1, Integer::sum);
+            }
+
+
+        }while(conta++<10000);
+        System.out.println(res);
+    }
+
+    private void testCallGira() {
+        String function = enumFunction.GIRA.name();
+        Integer statusCode = (Integer) call(new HashMap<>()
+                , BASE_URL + "/game/gira"
+                , HttpMethod.GET
+                , function).get(STATUS);
+        esiti.put(function, statusCode);
+    }
+
+    private void testCallGiraConsonante(char... c) {
+        String function = enumFunction.GIRA_CONSONANTE.name();
+        String chiama;
+        if (c.length>0){
+            chiama=String.valueOf(c[0]);
+        } else {
+            chiama = (String) getValueFromArgs(ARGS_CONSONANTE_CHIAMA.codeCsv(), function);
+        }
+        Map gira = (Map) call(new HashMap<>()
+                , BASE_URL + "/game/gira"
+                , HttpMethod.GET
+                , function).get(CONTENT);
+        Integer statusCode = (Integer) call(new HashMap<>()
+                , BASE_URL + "/game/consonante"
+                        +"?consonante="+chiama
+                        +"&trovato=" + gira.get("RESULT")
+                , HttpMethod.GET
+                , function).get(STATUS);
+        esiti.put(function, statusCode);
+    }
+    private void testCallConsonante() {
+        String function = enumFunction.CONSONANTE.name();
+        Integer statusCode = (Integer) call(new HashMap<>()
+                , BASE_URL + "/game/consonante?consonante=n&trovato=200"
+                , HttpMethod.GET
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
 
     private void testCallAvvia() {
         String function = enumFunction.AVVIA.name();
-        Integer statusCode = call(generateBody(function
+        Integer statusCode = (Integer) call(generateBody(function
                         , ARGS_ADD_NOME_GIOCATORE_GIMMI
                 )
                 , BASE_URL + "/game"
                 , HttpMethod.POST
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
 
     private void testCallAvviaRandom() {
         String function = enumFunction.AVVIA_RANDOM.name();
-        Integer statusCode = call(new HashMap<>()
+        Integer statusCode = (Integer) call(new HashMap<>()
                 , BASE_URL + "/game"
                 , HttpMethod.POST
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
 
     private void testCallAddGiocatore() {
         String function = enumFunction.ADD_GIOCATORE.name();
-        Integer statusCode = call(generateBody(function
+        Integer statusCode = (Integer) call(generateBody(function
                         , ARGS_ADD_NOME_GIOCATORE
                 )
                 , BASE_URL + "/giocatore"
                 , HttpMethod.POST
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
 
     private void testCallAddGiocatoreGimmi() {
         String function = enumFunction.ADD_GIOCATORE_GIMMI.name();
-        Integer statusCode = call(generateBody(function
+        Integer statusCode = (Integer) call(generateBody(function
                         , ARGS_ADD_NOME_GIOCATORE_GIMMI
                 )
                 , BASE_URL + "/giocatore"
                 , HttpMethod.POST
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
     private void testCallRenameGiocatore() {
         String function = enumFunction.REN_GIOCATORE.name();
-        Integer statusCode = call(generateBody(function
+        Integer statusCode = (Integer) call(generateBody(function
                         , ARGS_NOME_GIOCATORE_NUOVO
                 )
                 , BASE_URL + "/giocatore/" + getValueFromArgs(ARGS_GIOCATORE_DA_RINOMINARE.codeCsv(), function)
                 , HttpMethod.PUT
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
     private void testCallDelGiocatore() {
         String function = enumFunction.DEL_GIOCATORE.name();
-        Integer statusCode = call(new HashMap<>()
+        Integer statusCode = (Integer) call(new HashMap<>()
                 , BASE_URL + "/giocatore/" + getValueFromArgs(ARGS_NOME_GIOCATORE_DEL.codeCsv(), function)
                 , HttpMethod.DELETE
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
     private void testCallInit() {
         String function = enumFunction.INIT.name();
-        Integer statusCode = call(new HashMap<>()
+        Integer statusCode = (Integer) call(new HashMap<>()
                 , BASE_URL + "/game"
                 , HttpMethod.DELETE
-                , function);
+                , function).get(STATUS);
         esiti.put(function, statusCode);
     }
 
@@ -187,10 +270,11 @@ public class TesterApiRuota extends BaseClass {
     private static String DEFAULT_FILECONFIGURAZIONE = "testerApiRuota.csv";
     private static String DEFAULT_FUNCTION = "*";
 
-    private enum enumFunction {INFO, ADD_GIOCATORE, ADD_GIOCATORE_GIMMI, REN_GIOCATORE, DEL_GIOCATORE, INIT, AVVIA, AVVIA_RANDOM}
+    private enum enumFunction {INFO, ADD_GIOCATORE, ADD_GIOCATORE_GIMMI, REN_GIOCATORE, DEL_GIOCATORE, INIT, AVVIA, AVVIA_RANDOM, GIRA, GIRA_LOOP, CONSONANTE, GIRA_CONSONANTE}
 
 
     private static final ArgBody ARGS_ADD_NOME_GIOCATORE = new ArgBody("addNomeGiocatore", "nome");
+    private static final ArgBody ARGS_CONSONANTE_CHIAMA = new ArgBody("consonante", "consonante");
     private static final ArgBody ARGS_ADD_NOME_GIOCATORE_GIMMI = new ArgBody("addNomeGiocatoreGimmi", "nome");
     private static final ArgBody ARGS_NOME_GIOCATORE_NUOVO = new ArgBody("nomeGiocatoreNuovo", "nome");
     private static final ArgBody ARGS_GIOCATORE_DA_RINOMINARE = new ArgBody("giocatoreDaRinominare");
