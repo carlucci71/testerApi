@@ -91,6 +91,19 @@ public class TesterApiRuota extends BaseClass {
         testCallInfo();
         testCallGiraForzato("BANCAROTTA");
         testCallInfo();
+        testCallGiraChiamaForzato("GARAGE","N");
+        testCallInfo();
+        testCallGiraChiamaForzato("TRIPLO","C");
+        testCallInfo();
+        testCallCompraForzato("A");
+        testCallInfo();
+        testCallCompra();
+        testCallInfo();
+        testCallCompraForzato("U");
+        testCallInfo();
+        testCallSoluzione("Tra gennaio e marzo nel calendario di velocità e dell'amore");
+        testCallInfo();
+
 
 
         System.out.println();
@@ -161,11 +174,47 @@ public class TesterApiRuota extends BaseClass {
     }
 
     private void testCallGiraForzato(String forzato) {
-        String functionCall = enumFunction.CALL_GIRA_FORZATO.name();
+        String functionCall = enumFunction.GIRA_FORZATO.name();
         if (function.equalsIgnoreCase(functionCall) || function.equals("*")) {
             Integer statusCode = (Integer)  call(new HashMap<>()
                     , BASE_URL + "/game/gira"
                             + "?forzato=" + forzato
+                    , HttpMethod.GET
+                    , functionCall).get(STATUS);
+            esiti.put(functionCall, statusCode);
+        }
+    }
+
+    private void testCallCompraForzato(String forzato) {
+        String functionCall = enumFunction.COMPRA_FORZATO.name();
+        if (function.equalsIgnoreCase(functionCall) || function.equals("*")) {
+            Integer statusCode = (Integer)  call(new HashMap<>()
+                    , BASE_URL + "/game/vocale"
+                            + "?vocale=" + forzato
+                    , HttpMethod.GET
+                    , functionCall).get(STATUS);
+            esiti.put(functionCall, statusCode);
+        }
+    }
+
+    private void testCallSoluzione(String forzato) {
+        String functionCall = enumFunction.SOLUZIONE.name();
+        if (function.equalsIgnoreCase(functionCall) || function.equals("*")) {
+            Integer statusCode = (Integer)  call(new HashMap<>()
+                    , BASE_URL + "/game/soluzione"
+                            + "?soluzione=" + forzato
+                    , HttpMethod.GET
+                    , functionCall).get(STATUS);
+            esiti.put(functionCall, statusCode);
+        }
+    }
+
+    private void testCallCompra() {
+        String functionCall = enumFunction.COMPRA.name();
+        if (function.equalsIgnoreCase(functionCall) || function.equals("*")) {
+            Integer statusCode = (Integer)  call(new HashMap<>()
+                    , BASE_URL + "/game/vocale"
+                            + "?vocale=" + getValueFromArgs(ARGS_VOCALE_COMPRA.codeCsv(), functionCall)
                     , HttpMethod.GET
                     , functionCall).get(STATUS);
             esiti.put(functionCall, statusCode);
@@ -297,11 +346,12 @@ public class TesterApiRuota extends BaseClass {
     private static String DEFAULT_FILECONFIGURAZIONE = "testerApiRuota.csv";
     private static String DEFAULT_FUNCTION = "*";
 
-    private enum enumFunction {INFO, ADD_GIOCATORE, ADD_GIOCATORE_GIMMI, REN_GIOCATORE, DEL_GIOCATORE, INIT, AVVIA, AVVIA_RANDOM, GIRA, GIRA_LOOP, CONSONANTE, GIRA_CONSONANTE, GIRA_CHIAMA_FORZATO, CALL_GIRA_FORZATO}
+    private enum enumFunction {INFO, ADD_GIOCATORE, ADD_GIOCATORE_GIMMI, REN_GIOCATORE, DEL_GIOCATORE, INIT, AVVIA, AVVIA_RANDOM, GIRA, GIRA_LOOP, CONSONANTE, GIRA_CONSONANTE, GIRA_CHIAMA_FORZATO, GIRA_FORZATO, COMPRA_FORZATO, COMPRA, SOLUZIONE}
 
 
     private static final ArgBody ARGS_ADD_NOME_GIOCATORE = new ArgBody("addNomeGiocatore", "nome");
-    private static final ArgBody ARGS_CONSONANTE_CHIAMA = new ArgBody("consonante", "consonante");
+    private static final ArgBody ARGS_CONSONANTE_CHIAMA = new ArgBody("consonante");
+    private static final ArgBody ARGS_VOCALE_COMPRA = new ArgBody("vocale");
     private static final ArgBody ARGS_ADD_NOME_GIOCATORE_GIMMI = new ArgBody("addNomeGiocatoreGimmi", "nome");
     private static final ArgBody ARGS_NOME_GIOCATORE_NUOVO = new ArgBody("nomeGiocatoreNuovo", "nome");
     private static final ArgBody ARGS_GIOCATORE_DA_RINOMINARE = new ArgBody("giocatoreDaRinominare");
